@@ -1,9 +1,10 @@
 (ns d00
-  (:require [clojure.test :refer :all]
-            [clojure.string :as str]
-            [clojure.pprint :refer [pprint]]
-            [taoensso.truss :refer [have!]]
-            [util :as u :refer :all])
+  (:require
+    [clojure.test :refer :all]
+    [clojure.string :as str]
+    [clojure.pprint :refer [pprint]]
+    [taoensso.truss :refer [have!]]
+    [util :as u :refer :all])
   (:gen-class))
 
 (set! *warn-on-reflection* true)
