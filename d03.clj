@@ -50,8 +50,8 @@
     (loop [strs strs
            bit 0]
       (have! #(> len %) bit)
-      (let [choosen (spec-fn (frequencies (map #(get % bit) strs)))
-            strs (have! seq (filter #(= (get % bit) choosen) strs))]
+      (let [chosen (spec-fn (frequencies (map #(get % bit) strs)))
+            strs (have! seq (filter #(= (get % bit) chosen) strs))]
         (if (= 1 (count strs))
           (Integer/parseInt (first strs) 2)
           (recur strs (inc bit)))))))
@@ -64,6 +64,9 @@
   (is (= 230 (two test1))))
 
 (defn -main [& args]
-  (let [input (slurp (str *ns* ".in"))]
+  (let [input (slurp (or (first args) (str *ns* ".in")))]
     (println "1." (one input))
     (println "2." (two input))))
+
+(comment
+  (-main "d03.in"))
