@@ -16,6 +16,6 @@
   "not implemented")
 
 (defn -main [& args]
-  (let [input (slurp (or (first args) "d00.in"))]
+  (let [input (slurp (str *ns* ".in"))]
     (println "1." (one input))
     (println "2." (two input))))
