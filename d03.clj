@@ -53,19 +53,17 @@
       (let [choosen (spec-fn (frequencies (map #(get % bit) strs)))
             strs (have! seq (filter #(= (get % bit) choosen) strs))]
         (if (= 1 (count strs))
-          (first strs)
+          (Integer/parseInt (first strs) 2)
           (recur strs (inc bit)))))))
 
 (defn two [s]
-  (let [strs (-> s (str/split #"\s+"))
-        oxy (Integer/parseInt (narrow strs oxy-fn) 2)
-        co2 (Integer/parseInt (narrow strs co2-fn) 2)]
-    (* oxy co2)))
+  (let [strs (-> s (str/split #"\s+"))]
+    (* (narrow strs oxy-fn) (narrow strs co2-fn))))
 
 (deftest t2
   (is (= 230 (two test1))))
 
 (defn -main [& args]
-  (let [input (slurp "d03.in")]
+  (let [input (slurp (str *ns* ".in"))]
     (println "1." (one input))
     (println "2." (two input))))
