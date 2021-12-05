@@ -20,10 +20,7 @@
 0,0 -> 8,8
 5,5 -> 8,2")
 
-(defn- parse-input [s]
-  (->> s string->vector (filter int?) (partition 4)))
-
-(defn- straight-line [[x1 y1 x2 y2]]
+(defn- straight-line [[x1 y1 _ x2 y2]]
   (cond
     (= x1 x2) (for [y (range (min y1 y2) (inc (max y1 y2)))] [x1 y])
     (= y1 y2) (for [x (range (min x1 x2) (inc (max x1 x2)))] [x y1])
@@ -31,7 +28,8 @@
 
 (defn- solve [line-fn s]
   (->> s
-    parse-input
+    string->vector
+    (partition 5)
     (keep line-fn)
     (apply concat)
     frequencies
@@ -50,7 +48,7 @@
     (< v2 v1)  (range v1 (dec v2) -1)
     :else (repeat v1)))
 
-(defn- any-line [[x1 y1 x2 y2]]
+(defn- any-line [[x1 y1 _ x2 y2]]
   (mapv vector (make-range x1 x2) (make-range y1 y2)))
 
 (defn two [s]
