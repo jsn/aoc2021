@@ -17,8 +17,8 @@
     (vec (repeat 9 0))
     (string->vector s)))
 
-(defn- step [[z & tail]]
-  (-> tail vec (conj z) (update 6 + z)))
+(defn- step [[z & tail :as states]]
+  (-> states (subvec 1) (conj z) (update 6 + z)))
 
 (defn- solve [s n]
   (->> s
