@@ -57,11 +57,7 @@
         p4 (select-one [(has-len-of 4)] patterns)
         p7 (select-one [(has-len-of 7)] patterns)
         p8 (select-one [(has-len-of 8)] patterns)
-        segment-freqs (->> patterns
-                        (mapcat vec)
-                        frequencies
-                        (map (fn [[k v]] [v k]))
-                        (into {}))
+        segment-freqs (->> patterns (mapcat vec) frequencies set/map-invert)
         b (segment-freqs 6)
         e (segment-freqs 4)
         f (segment-freqs 9)
