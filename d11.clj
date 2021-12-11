@@ -73,12 +73,11 @@
 (defn two [s]
   (let [board (parse-input s)]
     (loop [step 0
-           board board
-           cnt 0]
+           board board]
       (let [[board flashed] (turn board)
             step (inc step)]
         (if (= 100 (count flashed)) step
-          (recur step board cnt))))))
+          (recur step board))))))
 
 (deftest t2
   (is (= 195 (two test1))))
