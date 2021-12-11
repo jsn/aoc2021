@@ -57,27 +57,25 @@
           (recur board seen (mapcat neighbs flashed)))))))
 
 (defn one [s]
-  (let [board (parse-input s)]
-    (loop [step 0
-           board board
-           cnt 0]
-      (let [[board flashed] (turn board)
-            cnt (+ cnt (count flashed))
-            step (inc step)]
-        (if (= step 100) cnt
-          (recur step board cnt))))))
+  (loop [board (parse-input s)
+         step 0
+         cnt 0]
+    (let [[board flashed] (turn board)
+          cnt (+ cnt (count flashed))
+          step (inc step)]
+      (if (= step 100) cnt
+        (recur board step cnt)))))
 
 (deftest t1
   (is (= 1656 (one test1))))
 
 (defn two [s]
-  (let [board (parse-input s)]
-    (loop [step 0
-           board board]
-      (let [[board flashed] (turn board)
-            step (inc step)]
-        (if (= 100 (count flashed)) step
-          (recur step board))))))
+  (loop [board (parse-input s)
+         step 0]
+    (let [[board flashed] (turn board)
+          step (inc step)]
+      (if (= 100 (count flashed)) step
+        (recur board step)))))
 
 (deftest t2
   (is (= 195 (two test1))))
