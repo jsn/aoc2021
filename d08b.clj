@@ -68,8 +68,8 @@
 (defn two [s]
   (->> s slurp str/split-lines (map solve2) (apply +)))
 
-(deftest t2b
-  (is (= 61229 (two "d08t.in"))))
+; (deftest t2b
+;   (is (= 61229 (two "d08t.in"))))
 
 (defn -main [& args]
   (let [input (or (first args) "d08.in")]
