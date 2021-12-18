@@ -34,8 +34,9 @@
   (let [xs (reductions + 0 (range vx 0 -1))
         times (->> xs (map #(when (<= x1 %2 x2) %1) (range)) (remove nil?))]
     (when (seq times)
-      (let [t-min (apply min times)
-            t-max (if (= vx (last times)) nil (apply max times))]
+      (let [t-min (first times)
+            t-last (last times)
+            t-max (when (not= vx t-last) t-last)]
         [t-min t-max]))))
 
 (defn- vxs [[x1 x2 _ _ :as target]]
