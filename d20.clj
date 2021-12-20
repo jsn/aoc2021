@@ -30,6 +30,9 @@
           (if (= \# (cells [x y] bg)) \1 \0)))
       2)))
 
+(defn- neighbs [[x y]]
+  (for [dx [-1 0 1] dy [-1 0 1]] [(+ x dx) (+ y dy)]))
+
 (defn- step [{:keys [bg rules cells] :as world}]
   (let [xs (map first (keys cells))
         ys (map second (keys cells))]
@@ -37,8 +40,7 @@
       :bg (if (= bg \.) (first rules) (get rules 511))
       :cells
       (into {}
-        (for [x (range (dec (apply min xs)) (+ 2 (apply max xs)))
-              y (range (dec (apply min ys)) (+ 2 (apply max ys)))
+        (for [[x y] (into #{} (mapcat neighbs (keys cells)))
               :let [c (next-char world [x y])]]
           [[x y] c])))))
 
