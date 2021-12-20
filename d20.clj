@@ -11,42 +11,36 @@
 
 (defn- parse [s]
   (let [[rules img] (-> s slurp (str/split #"\n\s*\n"))
-        lines (vec (str/split-lines img))
-        w (count (first lines))
-        h (count lines)]
+        lines (vec (str/split-lines img))]
     {:rules rules
      :bg \.
      :cells (into {}
-              (for [x (range w) y (range h)
-                    :let [c (get-in lines [y x])]]
-                [[x y] c]))}))
+              (for [x (range (count (first lines)))
+                    y (range (count lines))]
+                [[x y] (get-in lines [y x])]))}))
 
-(defn- next-char [{:keys [bg rules cells]} [px py]]
+(defn- neighbs [[x y]]
+  (for [dy [-1 0 1] dx [-1 0 1]] [(+ x dx) (+ y dy)]))
+
+(defn- next-char [{:keys [bg rules cells]} p]
   (get rules
     (Integer/parseInt
       (apply str
-        (for [y (range (dec py) (+ 2 py))
-              x (range (dec px) (+ 2 px))]
-          (if (= \# (cells [x y] bg)) \1 \0)))
+        (for [[x y] (neighbs p)]
+          ({\# 1} (cells [x y] bg) 0)))
       2)))
 
-(defn- neighbs [[x y]]
-  (for [dx [-1 0 1] dy [-1 0 1]] [(+ x dx) (+ y dy)]))
-
 (defn- step [{:keys [bg rules cells] :as world}]
-  (let [xs (map first (keys cells))
-        ys (map second (keys cells))]
-    (assoc world
-      :bg (if (= bg \.) (first rules) (get rules 511))
-      :cells
-      (into {}
-        (for [[x y] (into #{} (mapcat neighbs (keys cells)))
-              :let [c (next-char world [x y])]]
-          [[x y] c])))))
+  (assoc world
+    :bg (if (= bg \.) (first rules) (get rules 511))
+    :cells
+    (into {}
+      (for [[x y] (->> cells keys (mapcat neighbs) set)]
+        [[x y] (next-char world [x y])]))))
 
 (defn- solve [s n]
-  (let [worlds (iterate step (parse s))]
-    (-> worlds (nth n) :cells vals frequencies (get \#))))
+  (let [steps (iterate step (parse s))]
+    (-> steps (nth n) :cells vals frequencies (get \#))))
 
 (defn one [s]
   (solve s 2))
