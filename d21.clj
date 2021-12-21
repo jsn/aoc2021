@@ -14,7 +14,9 @@
 Player 2 starting position: 8")
 
 (defn- parse [s]
-  (->> s str/split-lines (map #(-> % last str Integer/parseInt)) vec))
+  (->> s
+    str/split-lines
+    (mapv (comp #(Integer/parseInt %) last #(str/split % #": ")))))
 
 (defn one [s]
   (loop [ps (parse s)
