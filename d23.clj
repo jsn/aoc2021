@@ -58,7 +58,7 @@
   (not-every? #(= room %) (world room)))
 
 (defn- move-out [world room hall]
-  (when (and (emitter? world room) (not (world hall)))
+  (when-not (world hall)
     (let [p (path room hall)]
       (when (not-any? world p)
         (let [r (world room)
@@ -69,15 +69,14 @@
              (assoc hall a))])))))
 
 (defn- move-in [world hall]
-  (let [room (world hall)]
-    (when (collector? world room)
-      (let [p (path room hall)]
-        (when (not-any? world p)
-          (let [r (world room)]
-            [(* (COSTS room) (+ (count p) *depth* (- (count r))))
-             (-> world
-               (update room conj room)
-               (dissoc hall))]))))))
+  (let [room (world hall)
+        p (path room hall)]
+    (when (not-any? world p)
+      (let [r (world room)]
+        [(* (COSTS room) (+ (count p) *depth* (- (count r))))
+         (-> world
+           (update room conj room)
+           (dissoc hall))]))))
 
 (defn- h-hall [hall a]
   (* (COSTS a) (inc (count (path a hall)))))
@@ -100,10 +99,10 @@
     (let [[c w]
           (first
             (for [[hall a] world
-                  :when (int? hall)
-                  :let [[c w] (move-in world hall)]
-                  :when c]
-              [c w]))]
+                  :when (and (int? hall) (collector? world a))
+                  :let [b (move-in world hall)]
+                  :when b]
+              b))]
       (if-not c
         (when (pos? cost) [cost world])
         (recur (+ cost ^long c) w)))))
