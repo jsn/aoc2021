@@ -69,19 +69,14 @@ mod w 2")
 (defn- force-i [prog fixeds d-range z ws]
   (let [i (count ws)]
     (if (= i (count prog)) ws
-      (let [p (prog i)
-            f (fixeds i)]
-        (if f
-          (if-let [d (f (mod z 26))]
-            (force-i prog fixeds d-range
-              (run1r p z d 3) (conj ws d))
-            nil)
-          (first
-            (for [d d-range
-                  :let [v (force-i prog fixeds d-range
-                            (run1r p z d 3) (conj ws d))]
-                  :when v]
-              v)))))))
+      (let [p (prog i)]
+        (if-let [f (fixeds i)]
+          (when-let [d (f (mod z 26))]
+            (force-i prog fixeds d-range (run1r p z d 3) (conj ws d)))
+          (some
+            #(force-i prog fixeds d-range (run1r p z % 3) (conj ws %))
+            d-range))
+        ))))
 
 (defn solve [s d-range]
   (let [prog (->> s parse (partition 18) (mapv vec))
